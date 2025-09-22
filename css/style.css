@@ -1,0 +1,30 @@
+body {
+  background: black; /* o un color oscuro como #171717 */
+}
+
+.container {
+  background-image: linear-gradient(violet, blue); /* o el degradado que prefieras */
+  position: fixed;
+  inset: 0;
+}
+
+.space-1 {
+  --size: 2px;
+  --space-layer: ;
+  --duration: 20s;
+  
+  width: var(--size);
+  height: var(--size);
+  background: white;
+  box-shadow: var(--space-layer);
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 75%;
+  animation: moveStars var(--duration) linear infinite;
+}
+
+@keyframes moveStars {
+  from { transform: translateY(0); }
+  to { transform: translateY(-100vh); }
+}

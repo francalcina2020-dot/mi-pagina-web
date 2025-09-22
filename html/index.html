@@ -1,0 +1,216 @@
+<!DOCTYPE html>  
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Flores Amarillas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bouquet-bottom: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: sans-serif;
+      background: black;
+    }
+
+    .container {
+      position: fixed;
+      inset: 0;
+      background: black;
+      z-index: 0;
+    }
+
+    /* Estrellas */
+    .space-1, .space-2, .space-3 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      opacity: .85;
+      animation: moveStars var(--duration) linear infinite;
+      background: transparent;
+      box-shadow: var(--space-layer);
+    }
+
+    .space-1 { --size: 2px; --duration: 20s; } /* amarillo */
+    .space-2 { --size: 1px; --duration: 15s; } /* celeste */
+    .space-3 { --size: 1px; --duration: 10s; } /* rosado */
+
+    @keyframes moveStars {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-100vh); }
+    }
+
+    .mensaje {
+      position: absolute;
+      top: 5vh;
+      width: 100%;
+      text-align: center;
+      font-family: 'Pacifico', cursive;
+      font-size: 4rem;
+      background: linear-gradient(90deg, #ffcc00, #ff66cc, #66ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s infinite linear;
+      text-shadow: 0 0 8px #8ee3c4, 0 0 12px #ff66cc, 0 0 18px #66ffff;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% { filter: brightness(1); }
+      50% { filter: brightness(1.6); }
+      100% { filter: brightness(1); }
+    }
+
+    /* Audio */
+    .audio-player {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      z-index: 20;
+    }
+
+    /* Flores */
+    .flowers-stage {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 1000px;
+      height: 70vh;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .flower {
+      position: absolute;
+      left: 50%;
+      bottom: var(--bouquet-bottom);
+      transform-origin: 50% 100%;
+      animation-name: sway;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+    }
+
+    .flower .pos {
+      transform-origin: bottom center;
+      display: block;
+    }
+
+    .flower img {
+      display: block;
+      user-select: none;
+      pointer-events: none;
+      width: var(--w);
+      height: auto;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.25));
+    }
+
+    @keyframes sway {
+      from { transform: rotate(-5deg); }
+      to   { transform: rotate(5deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .mensaje {
+        font-size: 2.5rem;
+        top: 2vh;
+      }
+      .flower img { width: calc(var(--w) * 0.6); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="space-1"></div>
+    <div class="space-2"></div>
+    <div class="space-3"></div>
+  </div>
+
+  <div class="mensaje">
+    TE QUIERO MUCHO ARI 🌻🌻🌻🌻
+  </div>
+
+  <div class="flowers-stage"></div>
+
+  <div class="audio-player">
+    <audio controls>
+      <source src="../audio/floresAudio.mp3" type="audio/mpeg" />
+    </audio>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const stage = document.querySelector(".flowers-stage");
+      const numFlowers = 7;
+
+      const config = [
+        { w: "340px", up: "360px", offsetX: "-40px",  rot: "-6deg",  dur: "7s",   delay: "0s" },
+        { w: "340px", up: "360px", offsetX: "40px",   rot: "6deg",   dur: "6.5s", delay: "0.2s" },
+        { w: "360px", up: "300px", offsetX: "-70px",  rot: "-12deg", dur: "5.8s", delay: "0.3s" },
+        { w: "360px", up: "300px", offsetX: "0px",    rot: "0deg",   dur: "6.8s", delay: "0.6s" },
+        { w: "360px", up: "300px", offsetX: "70px",   rot: "12deg",  dur: "5.5s", delay: "0.25s"},
+        { w: "320px", up: "200px", offsetX: "-30px",  rot: "-5deg",  dur: "5s",   delay: "0.4s" },
+        { w: "320px", up: "200px", offsetX: "30px",   rot: "5deg",   dur: "5.3s", delay: "0.5s" }
+      ];
+
+      for (let i = 0; i < numFlowers; i++) {
+        const cfg = config[i];
+        const anchor = document.createElement("div");
+        anchor.className = "flower";
+        anchor.style.setProperty("--w", cfg.w);
+        anchor.style.setProperty("--up", cfg.up);
+        anchor.style.setProperty("--offsetX", cfg.offsetX);
+        anchor.style.setProperty("--rot", cfg.rot);
+        anchor.style.animationDuration = cfg.dur;
+        anchor.style.animationDelay = cfg.delay;
+
+        const pos = document.createElement("div");
+        pos.className = "pos";
+        pos.style.transform = `translateX(calc(-50% + ${cfg.offsetX})) translateY(calc(-1 * ${cfg.up})) rotate(${cfg.rot})`;
+
+        const img = document.createElement("img");
+        img.alt = `Flor ${i+1}`;
+        img.src = `../imagenes/flor${i+1}.png`;
+        img.style.width = cfg.w;
+
+        const upVal = parseFloat(cfg.up);
+        anchor.style.zIndex = String(50 - Math.round(upVal / 10));
+
+        pos.appendChild(img);
+        anchor.appendChild(pos);
+        stage.appendChild(anchor);
+      }
+
+      // Generar estrellas de colores
+      function generateSpaceLayer(selector, totalStars, color) {
+        const layer = [];
+        for (let i = 0; i < totalStars; i++) {
+          const x = Math.floor(Math.random() * 100);
+          const y = Math.floor(Math.random() * 100);
+          layer.push(`${x}vw ${y}vh 0 ${color}`);
+        }
+        const container = document.querySelector(selector);
+        if (container) container.style.setProperty("--space-layer", layer.join(","));
+      }
+
+      generateSpaceLayer(".space-1", 200, "#ffcc00"); // Amarillo
+      generateSpaceLayer(".space-2", 350, "#66ccff"); // Celeste
+      generateSpaceLayer(".space-3", 450, "#ff66cc"); // Rosado
+    });
+  </script>
+</body>
+</html>
